@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Prontuários - MX Odontologia Pro{% endblock %}
+
+{% block header %}Prontuários{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h2>Histórico de Atendimento</h2>
+    <div class="page-actions">
+      <a class="button" href="{% url 'prontuario_add' %}">Novo Prontuário</a>
+    </div>
+  </div>
+
+  <article class="panel">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Data</th>
+            <th>Procedimento</th>
+            <th>Observações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for prontuario in prontuarios %}
+            <tr>
+              <td>{{ prontuario.paciente.nome }}</td>
+              <td>{{ prontuario.data_registro|date:'d/m/Y' }}</td>
+              <td>{{ prontuario.procedimento }}</td>
+              <td>{{ prontuario.observacoes }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4">Nenhum prontuário registrado.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+{% endblock %}

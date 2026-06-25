@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Agenda - MX Odontologia Pro{% endblock %}
+
+{% block header %}Agenda{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h2>Compromissos do Dia</h2>
+    <div class="page-actions">
+      <a class="button" href="{% url 'agenda_add' %}">Novo Agendamento</a>
+    </div>
+  </div>
+
+  <article class="panel">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Horário</th>
+            <th>Paciente</th>
+            <th>Procedimento</th>
+            <th>Responsável</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for consulta in consultas %}
+            <tr>
+              <td>{{ consulta.data_consulta|date:'H:i' }}</td>
+              <td>{{ consulta.paciente.nome }}</td>
+              <td>{{ consulta.procedimento }}</td>
+              <td>{{ consulta.dentista }}</td>
+              <td><span class="tag {{ consulta.status|lower }}">{{ consulta.status }}</span></td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">Nenhum agendamento registrado.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+{% endblock %}

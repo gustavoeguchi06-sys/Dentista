@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MX Odontologia Pro{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">🦷 MX Odontologia</div>
+      <nav class="menu" aria-label="Menu principal">
+        <a href="{% url 'dashboard' %}"><i class="fa fa-chart-line"></i> Dashboard</a>
+        <a href="{% url 'pacientes' %}"><i class="fa fa-users"></i> Pacientes</a>
+        <a href="{% url 'agenda' %}"><i class="fa fa-calendar"></i> Agenda</a>
+        <a href="{% url 'prontuarios' %}"><i class="fa fa-file-medical"></i> Prontuários</a>
+        <a href="{% url 'estoque' %}"><i class="fa fa-box"></i> Estoque</a>
+        <a href="{% url 'financeiro' %}"><i class="fa fa-dollar-sign"></i> Financeiro</a>
+        <a href="{% url 'relatorios' %}"><i class="fa fa-chart-pie"></i> Relatórios</a>
+        <a href="{% url 'administracao' %}"><i class="fa fa-user-shield"></i> Administração</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h1>{% block header %}Painel Administrativo{% endblock %}</h1>
+        <div class="user-info">
+          <i class="fa fa-user-circle"></i>
+          <span>Dr. Marcelo Xavier</span>
+        </div>
+      </header>
+
+      <section class="content">
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>
