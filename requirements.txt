@@ -1,5 +1,5 @@
 Django>=6.0
-mysqlclient
+psycopg[binary]
 
 gunicorn
 whitenoise

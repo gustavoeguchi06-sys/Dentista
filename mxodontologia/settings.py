@@ -78,22 +78,21 @@ WSGI_APPLICATION = 'mxodontologia.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQL_DATABASE'),
-        'USER': os.environ.get('MYSQL_USER'),
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
-        'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
-        'PORT': os.environ.get('MYSQL_PORT', '3306'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 
-if not DATABASES['default']['NAME']:
-    raise ImproperlyConfigured(
-        'MYSQL_DATABASE não definido. Configure a variável de ambiente MYSQL_DATABASE.'
-    )
+required_env = ['POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD']
+for env_var in required_env:
+    if not os.getenv(env_var):
+        raise ImproperlyConfigured(
+            f'{env_var} não definido. Configure a variável de ambiente {env_var}.'
+        )
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
