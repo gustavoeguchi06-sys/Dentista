@@ -9,24 +9,42 @@
     <h2 id="hero-title">Sistema de Gestão Odontológica</h2>
     <p>Controle completo da clínica em uma única plataforma, com agenda, pacientes, estoque e finanças organizados.</p>
   </section>
+  <section class="quick-actions" aria-label="Ações rápidas">
+    <a class="button" href="{% url 'pacientes' %}" target="_blank">Ver pacientes</a>
+    <a class="button secondary" href="{% url 'agenda' %}" target="_blank">Abrir agenda</a>
+    <a class="button secondary" href="{% url 'financeiro' %}" target="_blank">Finanças</a>
+    <button id="open-all" class="button secondary">Abrir todas as páginas</button>
+  </section>
 
   <section class="cards" aria-label="Resumo rápido">
-    <div class="card">
+    <a class="card" href="{% url 'pacientes' %}" target="_blank">
       <p>Pacientes</p>
-      <h3>1.248</h3>
-    </div>
-    <div class="card">
-      <p>Consultas Hoje</p>
-      <h3>38</h3>
-    </div>
-    <div class="card">
-      <p>Faturamento</p>
-      <h3>R$ 24.800</h3>
-    </div>
-    <div class="card">
-      <p>Estoque Crítico</p>
-      <h3>12</h3>
-    </div>
+      <h3>{{ pacientes_count|default:'—' }}</h3>
+    </a>
+    <a class="card" href="{% url 'agenda' %}" target="_blank">
+      <p>Agenda</p>
+      <h3>Ver agenda</h3>
+    </a>
+    <a class="card" href="{% url 'financeiro' %}" target="_blank">
+      <p>Financeiro</p>
+      <h3>Ver finanças</h3>
+    </a>
+    <a class="card" href="{% url 'estoque' %}" target="_blank">
+      <p>Estoque</p>
+      <h3>Ver estoque</h3>
+    </a>
+    <a class="card" href="{% url 'prontuarios' %}" target="_blank">
+      <p>Prontuários</p>
+      <h3>Ver prontuários</h3>
+    </a>
+    <a class="card" href="{% url 'relatorios' %}" target="_blank">
+      <p>Relatórios</p>
+      <h3>Gerar / Ver</h3>
+    </a>
+    <a class="card" href="{% url 'administracao' %}" target="_blank">
+      <p>Administração</p>
+      <h3>Usuários</h3>
+    </a>
   </section>
 
   <section class="grid">
@@ -98,4 +116,25 @@
       </div>
     </article>
   </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    (function(){
+      const openAll = document.getElementById('open-all');
+      if(!openAll) return;
+      const urls = [
+        '{% url "pacientes" %}',
+        '{% url "agenda" %}',
+        '{% url "prontuarios" %}',
+        '{% url "estoque" %}',
+        '{% url "financeiro" %}',
+        '{% url "relatorios" %}',
+        '{% url "administracao" %}'
+      ];
+      openAll.addEventListener('click', function(){
+        urls.forEach(u => window.open(u, '_blank'));
+      });
+    })();
+  </script>
 {% endblock %}

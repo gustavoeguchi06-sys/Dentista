@@ -21,4 +21,5 @@ urlpatterns = [
     path('administracao/', views.administracao, name='administracao'),
     path('administracao/adicionar/', views.administracao_add, name='administracao_add'),
     path('administracao/permissoes/', views.administracao_permissoes, name='administracao_permissoes'),
+    path('check-pages/', views.check_pages, name='check_pages'),
 ]

@@ -6,7 +6,10 @@
 
 {% block content %}
   <div class="page-header">
-    <h2>Lista de Pacientes</h2>
+    <div class="page-intro">
+      <h2>Lista de Pacientes</h2>
+      <p>Cadastre e acompanhe pacientes com dados organizados e prontos para atendimento.</p>
+    </div>
     <div class="page-actions">
       <a class="button" href="{% url 'paciente_add' %}">Adicionar Paciente</a>
       <a class="button secondary" href="{% url 'pacientes_export' %}">Exportar CSV</a>
@@ -36,7 +39,14 @@
             </tr>
           {% empty %}
             <tr>
-              <td colspan="5">Nenhum paciente cadastrado.</td>
+              <td colspan="5">
+                <div class="empty-state">
+                  <div class="empty-state-icon">🦷</div>
+                  <h3>Nenhum paciente cadastrado ainda</h3>
+                  <p>Comece adicionando o primeiro cadastro para estruturar seu fluxo de atendimento.</p>
+                  <a class="button" href="{% url 'paciente_add' %}">Adicionar primeiro paciente</a>
+                </div>
+              </td>
             </tr>
           {% endfor %}
         </tbody>

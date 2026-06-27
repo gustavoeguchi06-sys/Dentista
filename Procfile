@@ -1,1 +1,1 @@
-web: gunicorn mxodontologia.wsgi
+web: gunicorn mxodontologia.wsgi:application --bind 0.0.0.0:$PORT

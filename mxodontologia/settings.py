@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
-from django.core.exceptions import ImproperlyConfigured
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,12 +22,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r-oz#yw*ow@86c54&r+!aewd^qkcxj)ogn+k1%)+996$eei8-('
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# O default para deploy é False, mas sem SECRET_KEY definida localmente o app ainda pode subir com o fallback acima.
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = ['*']  # ajuste inicial para deploy
+# Hosts aceitos no deploy
+# - Netlify costuma expor o domínio via URL (ou você pode setar ALLOWED_HOSTS no Netlify)
+# - Mantemos localhost para desenvolvimento
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+for host in os.getenv('ALLOWED_HOSTS', '').split(','):
+    candidate = host.strip()
+    if candidate:
+        ALLOWED_HOSTS.append(candidate)
+
+NETLIFY_SITE_URL = os.getenv('URL') or os.getenv('NETLIFY_SITE_URL')
+if NETLIFY_SITE_URL:
+    NETLIFY_HOST = NETLIFY_SITE_URL.replace('https://', '').replace('http://', '').strip('/').split('/')[0]
+    if NETLIFY_HOST and NETLIFY_HOST not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(NETLIFY_HOST)
+
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
 
 
 # Application definition
@@ -76,27 +92,68 @@ WSGI_APPLICATION = 'mxodontologia.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
-    }
-}
+DATABASE_URL = os.getenv('DATABASE_URL')
+RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+POSTGRES_DB = os.getenv('POSTGRES_DB')
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'localhost')
+POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
+USE_SQLITE_FALLBACK = os.getenv('USE_SQLITE_FALLBACK', 'true' if DEBUG else 'false').lower() in ('true', '1', 'yes')
 
-required_env = ['POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD']
-for env_var in required_env:
-    if not os.getenv(env_var):
-        raise ImproperlyConfigured(
-            f'{env_var} não definido. Configure a variável de ambiente {env_var}.'
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(
+            DATABASE_URL,
+            engine='django.db.backends.postgresql',
+            conn_max_age=600,
+            ssl_require=not DEBUG,
         )
+    }
+elif POSTGRES_DB and POSTGRES_USER and POSTGRES_PASSWORD:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': POSTGRES_DB,
+            'USER': POSTGRES_USER,
+            'PASSWORD': POSTGRES_PASSWORD,
+            'HOST': POSTGRES_HOST,
+            'PORT': POSTGRES_PORT,
+        }
+    }
+elif USE_SQLITE_FALLBACK:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    raise RuntimeError(
+        'PostgreSQL configuration missing. Set DATABASE_URL or POSTGRES_DB/POSTGRES_USER/POSTGRES_PASSWORD.'
+    )
+
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS if host and host.strip()]
+
+CSRF_TRUSTED_ORIGINS = []
+for host in ALLOWED_HOSTS:
+    if not host:
+        continue
+    if host.startswith('http://') or host.startswith('https://'):
+        CSRF_TRUSTED_ORIGINS.append(host)
+    elif host != 'localhost':
+        CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

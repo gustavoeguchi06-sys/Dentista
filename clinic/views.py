@@ -23,15 +23,20 @@ from .models import (
     TransacaoFinanceira,
     Usuario,
 )
+from django.test import Client
 
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    try:
+        pacientes_count = Paciente.objects.count()
+    except Exception:
+        pacientes_count = 0
+    return render(request, 'dashboard/dashboard.html', {'pacientes_count': pacientes_count})
 
 
 def pacientes(request):
     pacientes = Paciente.objects.all().order_by('-data_cadastro')
-    return render(request, 'pacientes.html', {'pacientes': pacientes})
+    return render(request, 'pacientes/list.html', {'pacientes': pacientes})
 
 
 def paciente_add(request):
@@ -43,7 +48,7 @@ def paciente_add(request):
     else:
         form = PacienteForm()
 
-    return render(request, 'paciente_form.html', {'form': form, 'cancel_url': reverse('pacientes')})
+    return render(request, 'pacientes/form.html', {'form': form, 'cancel_url': reverse('pacientes')})
 
 
 def pacientes_export(request):
@@ -75,7 +80,7 @@ def pacientes_export(request):
 
 def agenda(request):
     consultas = Consulta.objects.select_related('paciente').order_by('data_consulta')
-    return render(request, 'agenda.html', {'consultas': consultas})
+    return render(request, 'agenda/list.html', {'consultas': consultas})
 
 
 def agenda_add(request):
@@ -86,12 +91,12 @@ def agenda_add(request):
             return redirect('agenda')
     else:
         form = ConsultaForm()
-    return render(request, 'agenda_form.html', {'form': form, 'cancel_url': reverse('agenda')})
+    return render(request, 'agenda/form.html', {'form': form, 'cancel_url': reverse('agenda')})
 
 
 def prontuarios(request):
     prontuarios = Prontuario.objects.select_related('paciente').order_by('-data_registro')
-    return render(request, 'prontuarios.html', {'prontuarios': prontuarios})
+    return render(request, 'prontuarios/list.html', {'prontuarios': prontuarios})
 
 
 def prontuario_add(request):
@@ -102,12 +107,12 @@ def prontuario_add(request):
             return redirect('prontuarios')
     else:
         form = ProntuarioForm()
-    return render(request, 'prontuario_form.html', {'form': form, 'cancel_url': reverse('prontuarios')})
+    return render(request, 'prontuarios/form.html', {'form': form, 'cancel_url': reverse('prontuarios')})
 
 
 def estoque(request):
     itens = EstoqueItem.objects.all().order_by('nome')
-    return render(request, 'estoque.html', {'itens': itens})
+    return render(request, 'estoque/list.html', {'itens': itens})
 
 
 def estoque_add(request):
@@ -118,12 +123,12 @@ def estoque_add(request):
             return redirect('estoque')
     else:
         form = EstoqueItemForm()
-    return render(request, 'estoque_form.html', {'form': form, 'cancel_url': reverse('estoque')})
+    return render(request, 'estoque/form.html', {'form': form, 'cancel_url': reverse('estoque')})
 
 
 def estoque_relatorio(request):
     itens = EstoqueItem.objects.filter(nivel_alerta__in=['Baixo', 'Crítico']).order_by('nivel_alerta', 'nome')
-    return render(request, 'estoque_report.html', {'itens': itens})
+    return render(request, 'estoque/report.html', {'itens': itens})
 
 
 def financeiro(request):
@@ -136,7 +141,7 @@ def financeiro(request):
     receitas = sum(t.valor for t in mensal if t.tipo == 'Receita')
     despesas = sum(t.valor for t in mensal if t.tipo == 'Despesa')
     saldo = receitas - despesas
-    return render(request, 'financeiro.html', {
+    return render(request, 'financeiro/list.html', {
         'transacoes': transacoes,
         'receitas': receitas,
         'despesas': despesas,
@@ -152,7 +157,7 @@ def financeiro_add(request):
             return redirect('financeiro')
     else:
         form = TransacaoFinanceiraForm()
-    return render(request, 'financeiro_form.html', {'form': form, 'cancel_url': reverse('financeiro')})
+    return render(request, 'financeiro/form.html', {'form': form, 'cancel_url': reverse('financeiro')})
 
 
 def financeiro_relatorio(request):
@@ -163,7 +168,7 @@ def financeiro_relatorio(request):
     )
     receitas = sum(t.valor for t in mensal if t.tipo == 'Receita')
     despesas = sum(t.valor for t in mensal if t.tipo == 'Despesa')
-    return render(request, 'financeiro_report.html', {
+    return render(request, 'financeiro/report.html', {
         'mensal': mensal,
         'receitas': receitas,
         'despesas': despesas,
@@ -174,7 +179,7 @@ def financeiro_relatorio(request):
 
 def relatorios(request):
     relatorios = Relatorio.objects.all().order_by('-data_geracao')
-    return render(request, 'relatorios.html', {'relatorios': relatorios})
+    return render(request, 'relatorios/list.html', {'relatorios': relatorios})
 
 
 def relatorio_add(request):
@@ -185,12 +190,12 @@ def relatorio_add(request):
             return redirect('relatorios')
     else:
         form = RelatorioForm()
-    return render(request, 'relatorio_form.html', {'form': form, 'cancel_url': reverse('relatorios')})
+    return render(request, 'relatorios/form.html', {'form': form, 'cancel_url': reverse('relatorios')})
 
 
 def administracao(request):
     usuarios = Usuario.objects.all().order_by('nome')
-    return render(request, 'administracao.html', {'usuarios': usuarios})
+    return render(request, 'administracao/list.html', {'usuarios': usuarios})
 
 
 def administracao_add(request):
@@ -201,7 +206,7 @@ def administracao_add(request):
             return redirect('administracao')
     else:
         form = UsuarioForm()
-    return render(request, 'administracao_form.html', {'form': form, 'cancel_url': reverse('administracao')})
+    return render(request, 'administracao/form.html', {'form': form, 'cancel_url': reverse('administracao')})
 
 
 def administracao_permissoes(request):
@@ -214,4 +219,31 @@ def administracao_permissoes(request):
             return redirect('administracao')
     else:
         form = PermissaoForm()
-    return render(request, 'administracao_permissions.html', {'form': form, 'cancel_url': reverse('administracao')})
+    return render(request, 'administracao/permissions.html', {'form': form, 'cancel_url': reverse('administracao')})
+
+
+def check_pages(request):
+    client = Client()
+    paths = [
+        '/',
+        '/pacientes/',
+        '/agenda/',
+        '/prontuarios/',
+        '/estoque/',
+        '/financeiro/',
+        '/relatorios/',
+        '/administracao/',
+    ]
+    results = []
+    for p in paths:
+        try:
+            resp = client.get(p)
+            content = resp.content.decode('utf-8', errors='ignore')[:1000]
+            # try to extract <title>
+            import re
+            m = re.search(r'<title>(.*?)</title>', content, re.IGNORECASE|re.DOTALL)
+            title = m.group(1).strip() if m else ''
+            results.append({'path': p, 'status': resp.status_code, 'title': title})
+        except Exception as e:
+            results.append({'path': p, 'status': 'ERROR', 'title': str(e)})
+    return render(request, 'dashboard/check_pages.html', {'results': results})

@@ -1,6 +1,11 @@
 {% if form %}
 <article class="panel">
-  <h3>{{ title }}</h3>
+  <div class="panel-header">
+    <div>
+      <h3>{{ title }}</h3>
+      <p class="panel-subtitle">Preencha os campos abaixo para registrar as informações com rapidez.</p>
+    </div>
+  </div>
   <form method="post" novalidate>
     {% csrf_token %}
     <div class="form-grid">

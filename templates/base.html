@@ -5,7 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}MX Odontologia Pro{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=20260626-2">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -27,9 +30,16 @@
 
     <main class="main">
       <header class="topbar">
-        <h1>{% block header %}Painel Administrativo{% endblock %}</h1>
-        <div class="user-info">
-          <i class="fa fa-user-circle"></i>
+        <button class="menu-toggle" aria-label="Abrir menu">☰</button>
+        <div class="topbar-brand">
+          <div class="brand-mark">MX</div>
+          <div>
+            <h1>{% block header %}Painel Administrativo{% endblock %}</h1>
+            <p class="topbar-subtitle">Clínica MX Odontologia • Gestão centralizada</p>
+          </div>
+        </div>
+        <div class="user-info" aria-label="Usuário logado">
+          <i class="fa fa-user-circle" aria-hidden="true"></i>
           <span>Dr. Marcelo Xavier</span>
         </div>
       </header>
@@ -39,5 +49,32 @@
       </section>
     </main>
   </div>
+  <script>
+    // Menu toggle for small screens
+    (function(){
+      const toggle = document.querySelector('.menu-toggle');
+      const sidebar = document.querySelector('.sidebar');
+      const menuLinks = document.querySelectorAll('.menu a');
+      if(toggle){
+        toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+      }
+      // mark active link
+      const path = window.location.pathname.replace(/\/+$/, '');
+      menuLinks.forEach(a => {
+        try{
+          const href = new URL(a.href).pathname.replace(/\/+$/, '');
+          if(href === path) a.classList.add('active');
+        }catch(e){}
+      });
+      // close sidebar when clicking outside on small screens
+      document.addEventListener('click', (e)=>{
+        if(window.innerWidth <= 900 && sidebar.classList.contains('open')){
+          if(!sidebar.contains(e.target) && !toggle.contains(e.target)){
+            sidebar.classList.remove('open');
+          }
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
