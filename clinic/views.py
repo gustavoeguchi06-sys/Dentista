@@ -50,7 +50,6 @@ def dashboard(request):
         return render(request, 'dashboard/dashboard.html', {'pacientes_count': pacientes_count})
 
     next_url = request.POST.get('next') or request.GET.get('next') or None
-    # Normalize possible string values that represent no-next
     if next_url in ('', 'None'):
         next_url = None
     form_type = request.POST.get('form_type') if request.method == 'POST' else None

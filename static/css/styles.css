@@ -716,6 +716,7 @@ th {
   margin-bottom: 24px;
 }
 
+
 .form-group {
   display: grid;
   gap: 8px;
@@ -745,6 +746,18 @@ select:focus {
   border-color: rgba(212, 169, 77, 0.75);
   box-shadow: 0 0 0 5px var(--ring);
   background: rgba(255, 255, 255, 1);
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #334155;
+}
+
+button,
+a.button {
+  font: inherit;
 }
 
 textarea {
@@ -878,4 +891,3 @@ textarea {
     padding: 12px 14px;
   }
 }
-
