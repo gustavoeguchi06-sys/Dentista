@@ -287,6 +287,36 @@ def administracao_permissoes(request):
     return render(request, 'administracao/permissions.html', {'form': form, 'cancel_url': reverse('administracao')})
 
 
+@login_required
+def paciente_delete(request, pk):
+    try:
+        paciente = Paciente.objects.get(pk=pk)
+        paciente.delete()
+    except Paciente.DoesNotExist:
+        pass
+    return redirect('pacientes')
+
+
+@login_required
+def consulta_delete(request, pk):
+    try:
+        consulta = Consulta.objects.get(pk=pk)
+        consulta.delete()
+    except Consulta.DoesNotExist:
+        pass
+    return redirect('agenda')
+
+
+@login_required
+def prontuario_delete(request, pk):
+    try:
+        prontuario = Prontuario.objects.get(pk=pk)
+        prontuario.delete()
+    except Prontuario.DoesNotExist:
+        pass
+    return redirect('prontuarios')
+
+
 def check_pages(request):
     client = Client()
     User = get_user_model()
