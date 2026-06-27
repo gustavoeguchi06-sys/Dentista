@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="page-intro">
+  <h1>Entrar</h1>
+  <p>Faça login para acessar o sistema.</p>
+</div>
+
+<form method="post" class="panel">
+  {% csrf_token %}
+  <div class="panel-header">Login</div>
+  <div class="panel-body">
+    {{ form.non_field_errors }}
+    <label>Usuário</label>
+    {{ form.username }}
+    <label>Senha</label>
+    {{ form.password }}
+  </div>
+  <div class="panel-footer">
+    <button type="submit" class="btn">Entrar</button>
+  </div>
+  <div class="panel-extra" style="text-align:center;margin-top:12px;">
+    <small>Não tem conta? <a href="{% url 'register' %}">Crie uma conta</a>.</small>
+  </div>
+</form>
+
+{% endblock %}

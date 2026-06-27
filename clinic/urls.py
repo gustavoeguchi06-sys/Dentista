@@ -1,8 +1,13 @@
 from django.urls import path
+from django.views.generic import RedirectView
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
+    path('register/', RedirectView.as_view(url='/', permanent=False), name='register'),
+    path('login/', RedirectView.as_view(url='/', permanent=False), name='login'),
+    path('logout/', views.logout_view, name='logout'),
     path('pacientes/', views.pacientes, name='pacientes'),
     path('pacientes/adicionar/', views.paciente_add, name='paciente_add'),
     path('pacientes/exportar/', views.pacientes_export, name='pacientes_export'),

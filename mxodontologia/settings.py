@@ -162,6 +162,11 @@ TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
+# Authentication redirects
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/pacientes/'
+LOGOUT_REDIRECT_URL = '/'
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 

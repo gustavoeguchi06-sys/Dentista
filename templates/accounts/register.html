@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar conta{% endblock %}
+
+{% block content %}
+<div class="page-intro">
+  <h1>Registre-se</h1>
+  <p>Crie uma conta para acessar o sistema.</p>
+</div>
+
+<form method="post" class="panel">
+  {% csrf_token %}
+  <div class="panel-header">Criar conta</div>
+  <div class="panel-body">
+    {{ form.non_field_errors }}
+    <label>Nome de usuário</label>
+    {{ form.username }}
+    <label>Senha</label>
+    {{ form.password1 }}
+    <label>Repita a senha</label>
+    {{ form.password2 }}
+  </div>
+  <div class="panel-footer">
+    <button type="submit" class="btn">Criar conta</button>
+  </div>
+  <div class="panel-extra" style="text-align:center;margin-top:12px;">
+    <small>Já tem conta? <a href="{% url 'login' %}">Faça login</a>.</small>
+  </div>
+</form>
+
+{% endblock %}

@@ -110,6 +110,7 @@ class ProntuarioForm(forms.ModelForm):
 
 
 class EstoqueItemForm(forms.ModelForm):
+    nome = forms.CharField(label='Materiais')
     quantidade = forms.IntegerField(
         widget=forms.NumberInput(
             attrs={
