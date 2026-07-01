@@ -43,11 +43,67 @@ def ensure_demo_user():
 
 def dashboard(request):
     if request.user.is_authenticated:
-        try:
-            pacientes_count = Paciente.objects.count()
-        except Exception:
-            pacientes_count = 0
-        return render(request, 'dashboard/dashboard.html', {'pacientes_count': pacientes_count})
+        today = timezone.localdate()
+        pacientes_count = Paciente.objects.count()
+        agenda_today = Consulta.objects.filter(
+            data_consulta__date=today
+        ).select_related('paciente').order_by('data_consulta')[:5]
+        agenda_count = Consulta.objects.filter(data_consulta__date=today).count()
+        recent_pacientes = Paciente.objects.order_by('-data_cadastro')[:5]
+        prontuarios_count = Prontuario.objects.count()
+        relatorios_count = Relatorio.objects.count()
+        financeiro_mensal = TransacaoFinanceira.objects.filter(
+            data_operacao__year=today.year,
+            data_operacao__month=today.month,
+        )
+        receitas = sum(t.valor for t in financeiro_mensal if t.tipo == 'Receita')
+        despesas = sum(t.valor for t in financeiro_mensal if t.tipo == 'Despesa')
+        saldo = receitas - despesas
+
+        daily_summary = {}
+        for transacao in financeiro_mensal:
+            dia = transacao.data_operacao.day
+            if dia not in daily_summary:
+                daily_summary[dia] = {
+                    'label': transacao.data_operacao.strftime('%d/%m'),
+                    'receitas': 0.0,
+                    'despesas': 0.0,
+                }
+            if transacao.tipo == 'Receita':
+                daily_summary[dia]['receitas'] += float(transacao.valor)
+            else:
+                daily_summary[dia]['despesas'] += float(transacao.valor)
+
+        chart_labels = []
+        chart_receitas = []
+        chart_despesas = []
+        for dia in sorted(daily_summary):
+            chart_labels.append(daily_summary[dia]['label'])
+            chart_receitas.append(daily_summary[dia]['receitas'])
+            chart_despesas.append(daily_summary[dia]['despesas'])
+
+        low_stock_items = EstoqueItem.objects.filter(
+            nivel_alerta__in=['Baixo', 'Crítico']
+        ).order_by('nivel_alerta', 'nome')[:4]
+        stock_alert_count = EstoqueItem.objects.filter(
+            nivel_alerta__in=['Baixo', 'Crítico']
+        ).count()
+        return render(request, 'dashboard/dashboard.html', {
+            'pacientes_count': pacientes_count,
+            'agenda_today': agenda_today,
+            'agenda_count': agenda_count,
+            'recent_pacientes': recent_pacientes,
+            'prontuarios_count': prontuarios_count,
+            'relatorios_count': relatorios_count,
+            'receitas': receitas,
+            'despesas': despesas,
+            'saldo': saldo,
+            'chart_labels': chart_labels,
+            'chart_receitas': chart_receitas,
+            'chart_despesas': chart_despesas,
+            'low_stock_items': low_stock_items,
+            'stock_alert_count': stock_alert_count,
+        })
 
     next_url = request.POST.get('next') or request.GET.get('next') or None
     if next_url in ('', 'None'):

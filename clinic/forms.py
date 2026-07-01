@@ -34,6 +34,7 @@ class PacienteForm(forms.ModelForm):
             attrs={
                 'pattern': '^[A-Za-zÀ-ÿ ]+$',
                 'inputmode': 'text',
+                'placeholder': 'Nome completo',
                 'title': 'Use apenas letras e espaços.',
             }
         ),
@@ -56,10 +57,12 @@ class PacienteForm(forms.ModelForm):
         validators=[only_digits],
         widget=forms.TextInput(
             attrs={
+                'placeholder': 'Telefone',
                 'pattern': '^[0-9]+$',
                 'inputmode': 'numeric',
                 'title': 'Use apenas números.',
                 'maxlength': '15',
+                'autocomplete': 'tel',
             }
         ),
     )
@@ -67,6 +70,7 @@ class PacienteForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(
             attrs={
+                'placeholder': 'Especialidade',
                 'pattern': '^[A-Za-zÀ-ÿ ]*$',
                 'inputmode': 'text',
                 'title': 'Use apenas letras e espaços.',
@@ -77,6 +81,13 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = ['nome', 'data_nascimento', 'telefone', 'email', 'especialidade', 'status']
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Email',
+                'inputmode': 'email',
+                'autocomplete': 'email',
+            }),
+        }
 
 
 class ConsultaForm(forms.ModelForm):
@@ -97,6 +108,7 @@ class ConsultaForm(forms.ModelForm):
         validators=[only_letters],
         widget=forms.TextInput(
             attrs={
+                'placeholder': 'Nome do dentista',
                 'pattern': '^[A-Za-zÀ-ÿ ]+$',
                 'inputmode': 'text',
                 'title': 'Use apenas letras e espaços.',
