@@ -5,44 +5,63 @@
 {% block header %}Painel Administrativo{% endblock %}
 
 {% block content %}
+
   {% if user.is_authenticated %}
     <section class="hero" aria-labelledby="hero-title">
-      <h2 id="hero-title">Sistema de Gestão Odontológica</h2>
-      <p>Controle completo da clínica em uma única plataforma, com agenda, pacientes, estoque e finanças organizados.</p>
+      <div class="hero-content">
+        <div>
+          <p class="eyebrow">Plataforma completa</p>
+          <h2 id="hero-title">Sistema de Gestão Odontológica, com experiência de SaaS.</h2>
+          <p>Centralize agenda, pacientes, estoque e finanças em um painel elegante, rápido e preparado para crescer.</p>
+        </div>
+        <div class="hero-badges">
+          <span><i class="fa fa-shield-alt"></i> Segurança</span>
+          <span><i class="fa fa-bolt"></i> Agilidade</span>
+          <span><i class="fa fa-mobile-alt"></i> Responsivo</span>
+        </div>
+      </div>
     </section>
+
     <section class="quick-actions" aria-label="Ações rápidas">
-      <a class="button" href="{% url 'pacientes' %}" target="_blank">Ver pacientes</a>
-      <a class="button secondary" href="{% url 'agenda' %}" target="_blank">Abrir agenda</a>
-      <a class="button secondary" href="{% url 'financeiro' %}" target="_blank">Finanças</a>
+      <a class="button" href="{% url 'pacientes' %}">Ver pacientes</a>
+      <a class="button secondary" href="{% url 'agenda' %}">Abrir agenda</a>
+      <a class="button secondary" href="{% url 'financeiro' %}">Finanças</a>
       <button id="open-all" class="button secondary">Abrir todas as páginas</button>
     </section>
 
     <section class="cards" aria-label="Resumo rápido">
-      <a class="card" href="{% url 'pacientes' %}" target="_blank">
+      <a class="card" href="{% url 'pacientes' %}">
+        <div class="card-icon"><i class="fa fa-users"></i></div>
         <p>Pacientes</p>
         <h3>{{ pacientes_count|default:'—' }}</h3>
       </a>
-      <a class="card" href="{% url 'agenda' %}" target="_blank">
+      <a class="card" href="{% url 'agenda' %}">
+        <div class="card-icon"><i class="fa fa-calendar"></i></div>
         <p>Agenda</p>
-        <h3>Ver agenda</h3>
+        <h3>Hoje</h3>
       </a>
-      <a class="card" href="{% url 'financeiro' %}" target="_blank">
+      <a class="card" href="{% url 'financeiro' %}">
+        <div class="card-icon"><i class="fa fa-dollar-sign"></i></div>
         <p>Financeiro</p>
-        <h3>Ver finanças</h3>
+        <h3>R$ 24,8k</h3>
       </a>
-      <a class="card" href="{% url 'estoque' %}" target="_blank">
+      <a class="card" href="{% url 'estoque' %}">
+        <div class="card-icon"><i class="fa fa-box"></i></div>
         <p>Estoque</p>
-        <h3>Ver estoque</h3>
+        <h3>Alertas</h3>
       </a>
-      <a class="card" href="{% url 'prontuarios' %}" target="_blank">
+      <a class="card" href="{% url 'prontuarios' %}">
+        <div class="card-icon"><i class="fa fa-file-medical"></i></div>
         <p>Prontuários</p>
-        <h3>Ver prontuários</h3>
+        <h3>Em dia</h3>
       </a>
-      <a class="card" href="{% url 'relatorios' %}" target="_blank">
+      <a class="card" href="{% url 'relatorios' %}">
+        <div class="card-icon"><i class="fa fa-chart-pie"></i></div>
         <p>Relatórios</p>
-        <h3>Gerar / Ver</h3>
+        <h3>Gerar</h3>
       </a>
-      <a class="card" href="{% url 'administracao' %}" target="_blank">
+      <a class="card" href="{% url 'administracao' %}">
+        <div class="card-icon"><i class="fa fa-user-shield"></i></div>
         <p>Administração</p>
         <h3>Usuários</h3>
       </a>
@@ -50,7 +69,12 @@
 
     <section class="grid">
       <article class="panel" aria-labelledby="agenda-title">
-        <h3 id="agenda-title">Agenda do Dia</h3>
+        <div class="panel-header">
+          <div>
+            <h3 id="agenda-title">Agenda do Dia</h3>
+            <p class="panel-subtitle">Resumo das consultas e procedimentos previstos.</p>
+          </div>
+        </div>
         <div class="table-wrapper">
           <table>
             <thead>
@@ -87,7 +111,12 @@
       </article>
 
       <article class="panel" aria-labelledby="patients-title">
-        <h3 id="patients-title">Pacientes Recentes</h3>
+        <div class="panel-header">
+          <div>
+            <h3 id="patients-title">Pacientes Recentes</h3>
+            <p class="panel-subtitle">Atendimento e especialidades em destaque.</p>
+          </div>
+        </div>
         <div class="patient-list">
           <div class="patient"><span>Juliana Costa</span><span>Ortodontia</span></div>
           <div class="patient"><span>Pedro Lima</span><span>Endodontia</span></div>
@@ -99,7 +128,12 @@
 
     <section class="grid">
       <article class="panel" aria-labelledby="finance-title">
-        <h3 id="finance-title">Fluxo Financeiro</h3>
+        <div class="panel-header">
+          <div>
+            <h3 id="finance-title">Fluxo Financeiro</h3>
+            <p class="panel-subtitle">Indicadores rápidos do mês atual.</p>
+          </div>
+        </div>
         <div class="status-block">
           <p>Receitas do mês: <strong>R$ 24.800</strong></p>
           <p>Despesas do mês: <strong>R$ 7.450</strong></p>
@@ -108,19 +142,29 @@
       </article>
 
       <article class="panel" aria-labelledby="stock-title">
-        <h3 id="stock-title">Alertas de Estoque</h3>
+        <div class="panel-header">
+          <div>
+            <h3 id="stock-title">Alertas de Estoque</h3>
+            <p class="panel-subtitle">Itens que precisam de atenção.</p>
+          </div>
+        </div>
         <div class="status-block">
-          <p>⚠ Luvas - 10 un.</p>
-          <p>⚠ Máscaras - 12 un.</p>
-          <p>⚠ Anestésico - 5 un.</p>
-          <p>⚠ Resina - 3 un.</p>
+          <p><i class="fa fa-exclamation-triangle"></i> Luvas - 10 un.</p>
+          <p><i class="fa fa-exclamation-triangle"></i> Máscaras - 12 un.</p>
+          <p><i class="fa fa-exclamation-triangle"></i> Anestésico - 5 un.</p>
+          <p><i class="fa fa-exclamation-triangle"></i> Resina - 3 un.</p>
         </div>
       </article>
     </section>
   {% else %}
-    <section class="hero" aria-labelledby="hero-title">
-      <h2 id="hero-title">Bem-vindo ao Painel Odontológico</h2>
-      <p>Entre ou crie uma conta diretamente nesta página para acessar o sistema.</p>
+    <section class="hero hero-compact" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <div>
+          <p class="eyebrow">Bem-vindo</p>
+          <h2 id="hero-title">Acesse o painel odontológico com uma experiência moderna.</h2>
+          <p>Entre ou crie uma conta para aproveitar gestão, relatórios e organização em um só lugar.</p>
+        </div>
+      </div>
     </section>
 
     <section class="auth-grid">

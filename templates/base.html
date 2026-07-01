@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=20260626-2">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=20260701-1">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -16,39 +16,48 @@
   <div class="layout">
     {% if request.user.is_authenticated %}
     <aside class="sidebar">
-      <div class="logo">🦷 MX Odontologia</div>
+      <div class="sidebar-header">
+        <div class="logo-mark">🦷</div>
+        <div>
+          <div class="logo">MX Odontologia</div>
+          <p class="logo-subtitle">Gestão inteligente</p>
+        </div>
+      </div>
       <nav class="menu" aria-label="Menu principal">
-        <a href="{% url 'dashboard' %}"><i class="fa fa-chart-line"></i> Dashboard</a>
-        <a href="{% url 'pacientes' %}"><i class="fa fa-users"></i> Pacientes</a>
-        <a href="{% url 'agenda' %}"><i class="fa fa-calendar"></i> Agenda</a>
-        <a href="{% url 'prontuarios' %}"><i class="fa fa-file-medical"></i> Prontuários</a>
-        <a href="{% url 'estoque' %}"><i class="fa fa-box"></i> Estoque</a>
-        <a href="{% url 'financeiro' %}"><i class="fa fa-dollar-sign"></i> Financeiro</a>
-        <a href="{% url 'relatorios' %}"><i class="fa fa-chart-pie"></i> Relatórios</a>
-        <a href="{% url 'administracao' %}"><i class="fa fa-user-shield"></i> Administração</a>
+        <a href="{% url 'dashboard' %}"><i class="fa fa-chart-line"></i><span>Dashboard</span></a>
+        <a href="{% url 'pacientes' %}"><i class="fa fa-users"></i><span>Pacientes</span></a>
+        <a href="{% url 'agenda' %}"><i class="fa fa-calendar"></i><span>Agenda</span></a>
+        <a href="{% url 'prontuarios' %}"><i class="fa fa-file-medical"></i><span>Prontuários</span></a>
+        <a href="{% url 'estoque' %}"><i class="fa fa-box"></i><span>Estoque</span></a>
+        <a href="{% url 'financeiro' %}"><i class="fa fa-dollar-sign"></i><span>Financeiro</span></a>
+        <a href="{% url 'relatorios' %}"><i class="fa fa-chart-pie"></i><span>Relatórios</span></a>
+        <a href="{% url 'administracao' %}"><i class="fa fa-user-shield"></i><span>Administração</span></a>
       </nav>
     </aside>
+    <div class="sidebar-backdrop" aria-hidden="true"></div>
     {% endif %}
 
     <main class="main">
       <header class="topbar">
-        <button class="menu-toggle" aria-label="Abrir menu">☰</button>
-        <div class="topbar-brand">
-          <div class="brand-mark">MX</div>
-          <div>
-            <h1>{% block header %}Painel Administrativo{% endblock %}</h1>
-            <p class="topbar-subtitle">Clínica MX Odontologia • Gestão centralizada</p>
+        <div class="topbar-left">
+          <button class="menu-toggle" aria-label="Abrir menu">☰</button>
+          <div class="topbar-brand">
+            <div class="brand-mark">MX</div>
+            <div>
+              <h1>{% block header %}Painel Administrativo{% endblock %}</h1>
+              <p class="topbar-subtitle">Clínica MX Odontologia • Gestão centralizada</p>
+            </div>
           </div>
         </div>
         <div class="user-info" aria-label="Usuário logado">
           <i class="fa fa-user-circle" aria-hidden="true"></i>
           {% if request.user.is_authenticated %}
             <span>{{ request.user.get_full_name|default:request.user.username }}</span>
-            <a href="{% url 'logout' %}" class="btn small">Sair</a>
+            <a href="{% url 'logout' %}" class="btn btn-ghost">Sair</a>
           {% else %}
             <div class="auth-actions">
-              <a href="{% url 'dashboard' %}" class="btn small">Entrar</a>
-              <a href="{% url 'dashboard' %}" class="btn small mute">Cadastrar</a>
+              <a href="{% url 'dashboard' %}" class="btn btn-ghost">Entrar</a>
+              <a href="{% url 'dashboard' %}" class="btn btn-muted">Cadastrar</a>
             </div>
           {% endif %}
         </div>
@@ -59,32 +68,7 @@
       </section>
     </main>
   </div>
-  <script>
-    // Menu toggle for small screens
-    (function(){
-      const toggle = document.querySelector('.menu-toggle');
-      const sidebar = document.querySelector('.sidebar');
-      const menuLinks = document.querySelectorAll('.menu a');
-      if(toggle){
-        toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
-      }
-      // mark active link
-      const path = window.location.pathname.replace(/\/+$/, '');
-      menuLinks.forEach(a => {
-        try{
-          const href = new URL(a.href).pathname.replace(/\/+$/, '');
-          if(href === path) a.classList.add('active');
-        }catch(e){}
-      });
-      // close sidebar when clicking outside on small screens
-      document.addEventListener('click', (e)=>{
-        if(window.innerWidth <= 900 && sidebar.classList.contains('open')){
-          if(!sidebar.contains(e.target) && !toggle.contains(e.target)){
-            sidebar.classList.remove('open');
-          }
-        }
-      });
-    })();
-  </script>
+  <script src="{% static 'js/app.js' %}"></script>
+  {% block extra_js %}{% endblock %}
 </body>
 </html>
