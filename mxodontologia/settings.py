@@ -161,6 +161,9 @@ LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
+DATE_FORMAT = 'd/m/Y'
+DATE_INPUT_FORMATS = ['%d/%m/%Y']
+DATETIME_FORMAT = 'd/m/Y H:i'
 
 # Authentication redirects
 LOGIN_URL = '/'

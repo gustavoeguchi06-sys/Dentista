@@ -38,6 +38,20 @@ class PacienteForm(forms.ModelForm):
             }
         ),
     )
+    data_nascimento = forms.DateField(
+        required=False,
+        input_formats=['%d/%m/%Y'],
+        widget=forms.TextInput(
+            attrs={
+                'class': 'mask-date',
+                'placeholder': 'dd/mm/aaaa',
+                'inputmode': 'numeric',
+                'pattern': '[0-9]{2}/[0-9]{2}/[0-9]{4}',
+                'title': 'Digite a data no formato dd/mm/aaaa.',
+                'autocomplete': 'bday',
+            }
+        ),
+    )
     telefone = forms.CharField(
         validators=[only_digits],
         widget=forms.TextInput(
@@ -63,13 +77,22 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = ['nome', 'data_nascimento', 'telefone', 'email', 'especialidade', 'status']
-        widgets = {
-            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
-        }
 
 
 class ConsultaForm(forms.ModelForm):
-    data_consulta = forms.DateTimeField(widget=DateTimeLocalInput())
+    data_consulta = forms.DateTimeField(
+        input_formats=['%d/%m/%Y %H:%M'],
+        widget=forms.TextInput(
+            attrs={
+                'class': 'mask-datetime',
+                'placeholder': 'dd/mm/aaaa hh:mm',
+                'inputmode': 'numeric',
+                'pattern': '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}',
+                'title': 'Digite a data/hora no formato dd/mm/aaaa hh:mm.',
+                'autocomplete': 'off',
+            }
+        ),
+    )
     dentista = forms.CharField(
         validators=[only_letters],
         widget=forms.TextInput(
